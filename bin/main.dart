@@ -32,6 +32,7 @@ void printWelcome() {
 
 Future<void> start() async {
   var url = readUrl();
+  String id = url.split('/')[4].split('.')[0];
   logger.i("version: $version");
   logger.i("URL: $url");
   var packer = NovelPacker.fromUrl(url);
@@ -40,9 +41,13 @@ Future<void> start() async {
   logger.i(packer.novel);
   printNovelDetail(packer.novel);
   var arg = readPackArgument(packer.catalog);
-  logger.i(arg);
+
+  String folderName = "$id${packer.novel.title}";
+
+  Directory(folderName).createSync();
+
   await packer.pack(arg);
-  // 防止打包完成后直接退出 无法查看到结果
+
   print("全部任务已完成，按回车键退出.");
   Console.readLine();
   exit(0);
