@@ -55,16 +55,19 @@ Future<void> start() async {
 
   await packer.pack(arg);
 
-  print("全部任务已完成，按回车键继续下载下一个小说，或输入 'exit' 退出.");
-  String? input = Console.readLine();
-  if (input == 'exit') {
-    exit(0);
-  }
+  print("全部任务已完成，准备下载下一个小说: ");
 
   // 自动生成下一个 URL
   int nextId = int.parse(id) + 1; // 将 ID 加 1
   String nextUrl = "https://www.linovelib.com/novel/$nextId.html"; // 生成下一个 URL
-  print("准备下载下一个小说: $nextUrl");
+  print("下一个小说的 URL: $nextUrl");
+
+  // 倒计时 5 秒
+  for (int i = 5; i > 0; i--) {
+    print("将在 $i 秒后开始下载...");
+    await Future.delayed(Duration(seconds: 1));
+  }
+
   await startWithUrl(nextUrl); // 递归调用下载下一个小说
 }
 
@@ -89,16 +92,19 @@ Future<void> startWithUrl(String url) async {
 
   await packer.pack(arg);
 
-  print("全部任务已完成，按回车键继续下载下一个小说，或输入 'exit' 退出.");
-  String? input = Console.readLine();
-  if (input == 'exit') {
-    exit(0);
-  }
+  print("全部任务已完成，准备下载下一个小说: ");
 
   // 自动生成下一个 URL
   int nextId = int.parse(id) + 1; // 将 ID 加 1
   String nextUrl = "https://www.linovelib.com/novel/$nextId.html"; // 生成下一个 URL
-  print("准备下载下一个小说: $nextUrl");
+  print("下一个小说的 URL: $nextUrl");
+
+  // 倒计时 5 秒
+  for (int i = 5; i > 0; i--) {
+    print("将在 $i 秒后开始下载...");
+    await Future.delayed(Duration(seconds: 1));
+  }
+
   await startWithUrl(nextUrl); // 递归调用下载下一个小说
 }
 
