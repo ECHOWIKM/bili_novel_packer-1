@@ -68,6 +68,18 @@ class NovelPacker {
     if (lightNovelSource is BiliNovelSource) {
       await BiliNovelSource.init();
     }
+
+    // 从 URL 中提取 ID
+    String id = '';
+    if (url.contains('novel/')) {
+      id = url.split('novel/')[1].split('.')[0]; // 从 URL 中提取数字 ID
+    }
+
+    // 创建以 ID 为前缀的文件夹名
+    String folderName =
+        "$id${_sanitizeFileName(novel.title)}"; // 例如: "2209Dark Lord"
+    Directory(folderName).createSync(); // 创建文件夹
+
     if (!arg.combineVolume) {
       for (var volume in arg.packVolumes) {
         logger.i("开始打包 ${volume.catalog.novel.title} ${volume.volumeName}");
@@ -79,16 +91,15 @@ class NovelPacker {
     } else {
       // 合并分卷
       String title = _sanitizeFileName(novel.title);
-      String path = "$title${Platform.pathSeparator}$title.epub";
+      String volumeName = arg.packVolumes.first.volumeName; // 获取卷名
+      String path =
+          "$folderName${Platform.pathSeparator}$title $volumeName.epub"; // 将 EPUB 文件放入以 ID 命名的文件夹
       logger.i("EPUB file: $path");
       await _combineVolume(path, arg);
     }
   }
 
-  Future<void> _combineVolume(
-    String path,
-    PackArgument arg,
-  ) async {
+  Future<void> _combineVolume(String path, PackArgument arg) async {
     EpubPacker packer = EpubPacker(path);
     packer.docTitle = novel.title;
     packer.creator = novel.author;
