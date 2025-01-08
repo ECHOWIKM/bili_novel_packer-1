@@ -60,6 +60,46 @@ Future<void> start() async {
   if (input == 'exit') {
     exit(0);
   }
+
+  // 自动生成下一个 URL
+  int nextId = int.parse(id) + 1; // 将 ID 加 1
+  String nextUrl = "https://www.linovelib.com/novel/$nextId.html"; // 生成下一个 URL
+  print("准备下载下一个小说: $nextUrl");
+  await startWithUrl(nextUrl); // 递归调用下载下一个小说
+}
+
+Future<void> startWithUrl(String url) async {
+  String id = url.split('/')[4].split('.')[0];
+  logger.i("version: $version");
+  logger.i("URL: $url");
+  var packer = NovelPacker.fromUrl(url);
+  print("正在加载数据...");
+  await packer.init();
+  logger.i(packer.novel);
+  printNovelDetail(packer.novel);
+  var arg = readPackArgument(packer.catalog);
+
+  // 默认设置
+  arg.combineVolume = false; // 不合并分卷
+  arg.addChapterTitle = true; // 添加章节标题
+
+  String folderName = "$id${packer.novel.title}";
+
+  Directory(folderName).createSync();
+
+  await packer.pack(arg);
+
+  print("全部任务已完成，按回车键继续下载下一个小说，或输入 'exit' 退出.");
+  String? input = Console.readLine();
+  if (input == 'exit') {
+    exit(0);
+  }
+
+  // 自动生成下一个 URL
+  int nextId = int.parse(id) + 1; // 将 ID 加 1
+  String nextUrl = "https://www.linovelib.com/novel/$nextId.html"; // 生成下一个 URL
+  print("准备下载下一个小说: $nextUrl");
+  await startWithUrl(nextUrl); // 递归调用下载下一个小说
 }
 
 String readUrl() {
